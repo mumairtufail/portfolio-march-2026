@@ -1,0 +1,16 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to Laravel internals when project root is web root.
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)(/|$) - [F,L,NC]
+    RewriteRule ^(\.env|\.env\..*|artisan|composer\.(json|lock)|package\.json|vite\.config\.js|phpunit\.xml)$ - [F,L,NC]
+
+    # Keep ACME challenge reachable for SSL renewals.
+    RewriteCond %{REQUEST_URI} !^/\.well-known/
+
+    # Route everything to /public (Laravel front controller and static files).
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
